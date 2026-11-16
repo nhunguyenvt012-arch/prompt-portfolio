@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dịch vụ viết prompt roleplay</title>
+<meta name="description" content="Dịch vụ viết prompt và thẻ nhân vật roleplay AI bằng tiếng Việt, theo yêu cầu.">
+<style>
+  :root{
+    --bg:#f7f5f2; --surface:#ffffff; --text:#1d1b1a; --muted:#6a6560;
+    --line:#e4dfd9; --accent:#6d4aff; --accent-ink:#ffffff; --code:#f1eee9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#141214; --surface:#1d1a1f; --text:#f0ecf2; --muted:#a09aa6;
+      --line:#2f2b33; --accent:#9b82ff; --accent-ink:#141214; --code:#17141a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141214; --surface:#1d1a1f; --text:#f0ecf2; --muted:#a09aa6;
+    --line:#2f2b33; --accent:#9b82ff; --accent-ink:#141214; --code:#17141a;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:960px;margin:0 auto;padding:0 16px}
+  header.top{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:5}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
+  .brand{font-weight:700}
+  nav{display:flex;gap:16px;font-size:14px;align-items:center}
+  nav a{color:var(--muted);text-decoration:none}
+  nav a:hover{color:var(--text)}
+  .theme{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:13px}
+  section{padding:56px 0}
+  h1{font-size:clamp(28px,5vw,44px);line-height:1.2;margin:0 0 16px}
+  h2{font-size:24px;margin:0 0 8px}
+  .lead{color:var(--muted);max-width:60ch;margin:0 0 24px}
+  .sub{color:var(--muted);margin:0 0 28px}
+  .btn{display:inline-block;background:var(--accent);color:var(--accent-ink);padding:10px 18px;border-radius:10px;
+    text-decoration:none;font-weight:600;border:0;cursor:pointer;font-size:15px}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card.featured{border-color:var(--accent)}
+  .price{font-size:20px;font-weight:700;margin:4px 0 8px}
+  .card ul{padding-left:18px;margin:12px 0 0;color:var(--muted);font-size:14px}
+  .tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;color:var(--muted)}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+  .chip{background:var(--surface);border:1px solid var(--line);color:var(--text);border-radius:99px;padding:6px 14px;cursor:pointer;font-size:14px}
+  .chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  pre{white-space:pre-wrap;word-wrap:break-word;background:var(--code);border-radius:10px;padding:14px;
+    font:13.5px/1.6 ui-monospace,Consolas,monospace;margin:12px 0;max-height:320px;overflow:auto}
+  details summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14px;margin-top:10px}
+  .steps{counter-reset:s;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .step{counter-increment:s}
+  .step::before{content:counter(s);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;
+    background:var(--accent);color:var(--accent-ink);font-weight:700;margin-bottom:8px}
+  .step h3{margin:0 0 4px;font-size:16px}
+  .step p{margin:0;color:var(--muted);font-size:14px}
+  .faq details{border-bottom:1px solid var(--line);padding:14px 0}
+  .faq summary{color:var(--text);margin:0;font-size:16px}
+  .faq p{color:var(--muted);margin:8px 0 0}
+  footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:14px}
+  .hidden{display:none}
+  @media (max-width:560px){nav a.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <span class="brand" id="brand"></span>
+    <nav>
+      <a class="hide-sm" href="#dich-vu">Dịch vụ</a>
+      <a class="hide-sm" href="#mau">Mẫu</a>
+      <a class="hide-sm" href="#quy-trinh">Quy trình</a>
+      <a href="#dat-hang">Đặt hàng</a>
+      <button class="theme" id="themeBtn" aria-label="Đổi giao diện sáng/tối">Sáng/Tối</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="gioi-thieu">
+    <h1 id="tagline"></h1>
+    <p class="lead" id="intro"></p>
+    <div class="row">
+      <a class="btn" href="#dat-hang">Đặt prompt riêng</a>
+      <a class="btn ghost" href="#mau">Xem mẫu</a>
+    </div>
+  </section>
+
+  <section id="dich-vu">
+    <h2>Dịch vụ</h2>
+    <p class="sub">Giá mang tính tham khảo, chốt cụ thể sau khi trao đổi yêu cầu.</p>
+    <div class="grid" id="services"></div>
+  </section>
+
+  <section id="mau">
+    <h2>Mẫu đã làm</h2>
+    <p class="sub">Bấm "Xem prompt" để đọc đầy đủ, hoặc sao chép để thử trực tiếp.</p>
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="samples"></div>
+  </section>
+
+  <section id="quy-trinh">
+    <h2>Quy trình</h2>
+    <div class="steps" id="process" style="margin-top:20px"></div>
+  </section>
+
+  <section id="faq" class="faq">
+    <h2>Câu hỏi thường gặp</h2>
+    <div id="faqList" style="margin-top:12px"></div>
+  </section>
+
+  <section id="dat-hang">
+    <h2>Đặt hàng</h2>
+    <p class="sub">Chọn kênh bạn thấy tiện nhất. Hãy kể thể loại, nhân vật, giọng văn và mô hình AI bạn dùng.</p>
+    <div class="row" id="contacts"></div>
+    <p class="sub hidden" id="noContact" style="margin-top:16px">
+      (Chưa cấu hình kênh liên hệ: mở <code>data.js</code> và điền mục <code>contact</code>.)
+    </p>
+    <p class="sub hidden" id="affiliate" style="margin-top:16px;font-size:14px"></p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© <span id="year"></span> <span id="brand2"></span>. Nội dung do tác giả viết, không liên kết với các nền tảng AI nhắc đến.</div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  document.title = SITE.brand + " | Dịch vụ viết prompt roleplay";
+  $("brand").textContent = SITE.brand;
+  $("brand2").textContent = SITE.brand;
+  $("tagline").textContent = SITE.tagline;
+  $("intro").textContent = SITE.intro;
+  $("year").textContent = new Date().getFullYear();
+
+  // Dịch vụ
+  $("services").innerHTML = SERVICES.map(s => `
+    <div class="card${s.featured ? " featured" : ""}">
+      <strong>${esc(s.name)}</strong>
+      <div class="price">${esc(s.price)}</div>
+      <div style="color:var(--muted);font-size:14px">${esc(s.desc)}</div>
+      <ul>${s.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
+    </div>`).join("");
+
+  // Mẫu + lọc thể loại
+  const genres = ["Tất cả", ...new Set(SAMPLES.map(s => s.genre))];
+  let current = "Tất cả";
+  function renderFilters(){
+    $("filters").innerHTML = genres.map(g =>
+      `<button class="chip" aria-pressed="${g === current}" data-g="${esc(g)}">${esc(g)}</button>`).join("");
+    $("filters").querySelectorAll("button").forEach(b => b.onclick = () => {
+      current = b.dataset.g; renderFilters(); renderSamples();
+    });
+  }
+  function renderSamples(){
+    const list = SAMPLES.filter(s => current === "Tất cả" || s.genre === current);
+    $("samples").innerHTML = list.map((s) => {
+      const idx = SAMPLES.indexOf(s);
+      return `
+      <article class="card">
+        <span class="tag">${esc(s.genre)}</span>
+        <h3 style="margin:10px 0 4px">${esc(s.title)}</h3>
+        <div style="color:var(--muted);font-size:14px">${esc(s.blurb)}</div>
+        <details>
+          <summary>Xem prompt</summary>
+          <pre>${esc(s.prompt)}</pre>
+          <button class="btn ghost copy" data-i="${idx}" style="padding:6px 12px;font-size:13px">Sao chép</button>
+        </details>
+      </article>`;
+    }).join("");
+    document.querySelectorAll(".copy").forEach(b => b.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(SAMPLES[b.dataset.i].prompt);
+        b.textContent = "Đã sao chép ✓";
+      } catch { b.textContent = "Không sao chép được"; }
+      setTimeout(() => b.textContent = "Sao chép", 1800);
+    });
+  }
+  renderFilters(); renderSamples();
+
+  // Quy trình
+  $("process").innerHTML = PROCESS.map(([t, d]) =>
+    `<div class="step"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("");
+
+  // FAQ
+  $("faqList").innerHTML = FAQ.map(([q, a]) =>
+    `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("");
+
+  // Liên hệ: chỉ hiện kênh nào có điền
+  const c = SITE.contact;
+  const channels = [
+    [c.form, "Điền form đặt hàng", c.form],
+    [c.discord, "Discord", c.discord],
+    [c.zalo, "Zalo", c.zalo],
+    [c.kofi, "Ko-fi", c.kofi],
+    [c.email, "Email", c.email && "mailto:" + c.email],
+  ].filter(x => x[0]);
+  $("contacts").innerHTML = channels.map(([, label, href], i) =>
+    `<a class="btn${i ? " ghost" : ""}" href="${esc(href)}" target="_blank" rel="noopener">${esc(label)}</a>`).join("");
+  if (!channels.length) $("noContact").classList.remove("hidden");
+  if (SITE.affiliateNote){ $("affiliate").textContent = SITE.affiliateNote; $("affiliate").classList.remove("hidden"); }
+
+  // Giao diện sáng/tối
+  try {
+    const saved = localStorage.getItem("theme");
+    if (saved) document.documentElement.dataset.theme = saved;
+  } catch {}
+  $("themeBtn").onclick = () => {
+    const dark = document.documentElement.dataset.theme === "dark" ||
+      (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+    const next = dark ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("theme", next); } catch {}
+  };
+</script>
+</body>
+</html>
